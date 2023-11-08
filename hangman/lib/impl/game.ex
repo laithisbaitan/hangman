@@ -13,7 +13,7 @@ defmodule Hangman.Impl.Game do
     turns_left: 7,
     game_state: :initializing,
     letters:    [],
-    used:       MapSet.new()
+    used:       MapSet.new(),
   )
 
   ##################################################
@@ -33,8 +33,7 @@ defmodule Hangman.Impl.Game do
   ##################################################
 
   @spec make_move(t, String.t) :: { t, Type.tally }
-  def make_move(game = %{ game_state: state }, _guess)
-  when state in [ :won, :lost ] do
+  def make_move(game = %{ game_state: state }, _guess) when state in [ :won, :lost ] do
     game
     |> return_with_tally()
   end
@@ -70,7 +69,10 @@ defmodule Hangman.Impl.Game do
     %{ game | game_state: :bad_guess, turns_left: game.turns_left - 1 }
   end
 
+
+
   ##################################################
+
 
   def tally(game) do
     %{
@@ -85,10 +87,13 @@ defmodule Hangman.Impl.Game do
     { game, tally(game) }
   end
 
+  defp reveal_guessed_letters(game = %{ game_state: :lost }) do
+    game.letters
+  end
+
   defp reveal_guessed_letters(game) do
     game.letters
-    |> Enum.map(fn letter -> MapSet.member?(game.used, letter)
-    |> maybe_reveal(letter) end)
+    |> Enum.map(fn letter -> MapSet.member?(game.used, letter) |> maybe_reveal(letter) end)
   end
 
   defp maybe_won(true), do: :won
