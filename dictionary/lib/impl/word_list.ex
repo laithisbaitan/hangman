@@ -1,11 +1,13 @@
 defmodule Dictionary.Impl.WordList do
-  @type t :: list(String)
 
-  @spec word_list() :: t
+  @type t :: list(String.t)
+
+  @spec word_list :: t
   def word_list do
-    "assets/words.txt"
+    "../../assets/words.txt"
+    |> Path.expand(__DIR__)
     |> File.read!()
-    |> String.split("\n",trim: true)
+    |> String.split( ~r/\n/, trim: true)
   end
 
   @spec random_word(t) :: String.t
